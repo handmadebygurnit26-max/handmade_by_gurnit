@@ -610,11 +610,17 @@ try {
 }
 
 
-var auth =
-  firebase.auth();
+var auth = firebase.auth();
+var db = firebase.firestore();
 
-var db =
-  firebase.firestore();
+/*
+ * Helps Firestore work on mobile networks/browsers
+ * where the normal WebChannel connection can hang.
+ */
+db.settings({
+  experimentalForceLongPolling: true,
+  useFetchStreams: false
+});
 
 
 /* =========================================================
