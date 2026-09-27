@@ -484,6 +484,19 @@
     font-size:28px;
   }
   .confirm-box p{color:var(--ink-soft);font-size:14px;margin:10px 0 18px;}
+  .order-number-badge{
+    display:inline-block;
+    background:var(--cream-tag);
+    border:1px solid var(--line);
+    color:var(--rose-dark);
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:17px;
+    letter-spacing:.03em;
+    padding:8px 18px;
+    border-radius:999px;
+    margin:6px 0 4px;
+  }
   .wa-link-btn{
     display:inline-flex;
     align-items:center;
@@ -608,6 +621,7 @@
       </div>
 
       <!-- hidden fields compiled by JS -->
+      <input type="hidden" name="Order Number" id="hiddenOrderNumber">
       <input type="hidden" name="Order Summary" id="hiddenOrderSummary">
       <input type="hidden" name="Grand Total" id="hiddenGrandTotal">
       <input type="hidden" name="Gift Wrap" id="hiddenGiftWrap">
@@ -635,7 +649,12 @@
     <div class="confirm-box">
       <div class="check">✓</div>
       <h2 style="font-size:19px;">Order placed!</h2>
-      <p>Handmade By Gurnit will contact you on WhatsApp to confirm availability, pricing and delivery.</p>
+      <div class="order-number-badge" id="orderNumberBadge">Order #—</div>
+      <p>
+        Since everything here is handmade and customized, please tap the button below and send us:<br>
+        <strong>1) Your order number</strong> (already filled in)<br>
+        <strong>2) Your requirements</strong> — names, colors, text, photos, or anything specific you want on your order
+      </p>
       <a class="wa-link-btn" id="confirmWaLink" href="#" target="_blank" rel="noopener">
         Chat on WhatsApp
       </a>
@@ -788,6 +807,14 @@
   }
   function formatRupee(n){
     return "₹" + n.toLocaleString("en-IN");
+  }
+  function generateOrderNumber(){
+    var now = new Date();
+    var yy = String(now.getFullYear()).slice(-2);
+    var mm = String(now.getMonth()+1).padStart(2,"0");
+    var dd = String(now.getDate()).padStart(2,"0");
+    var rand = Math.floor(1000 + Math.random()*9000);
+    return "HBG-" + yy + mm + dd + "-" + rand;
   }
   function getProduct(id){
     for(var i=0;i<PRODUCTS.length;i++){ if(PRODUCTS[i].id===id) return PRODUCTS[i]; }
@@ -1049,14 +1076,19 @@
   }
 
   var orderForm = document.getElementById("orderForm");
+  var currentOrderNumber = "";
   orderForm.addEventListener("submit", function(e){
     e.preventDefault();
 
     if(cartItemCount()===0){ return; }
     if(!validateForm()){ return; }
 
+    currentOrderNumber = generateOrderNumber();
+
     // compile hidden order summary fields
+    document.getElementById("hiddenOrderNumber").value = currentOrderNumber;
     document.getElementById("hiddenOrderSummary").value =
+      "ORDER NUMBER: " + currentOrderNumber + "\n\n" +
       "ORDER FROM: " + SHOP.name + "\n\n" +
       "ITEMS:\n" + buildOrderSummaryText() + "\n\n" +
       "GRAND TOTAL: " + formatRupee(cartGrandTotal());
@@ -1086,10 +1118,13 @@
         orderForm.reset();
         closeOverlay("checkoutOverlay");
 
+        document.getElementById("orderNumberBadge").textContent = "Order #" + currentOrderNumber;
+
         var waMsg = encodeURIComponent(
-          "Hi! I just placed an order on your website.\n\n" + buildOrderSummaryTextSnapshot
+          "Order Number: " + currentOrderNumber + "\n" +
+          "My requirements: "
         );
-        document.getElementById("confirmWaLink").href = "https://wa.me/" + SHOP.phoneWa;
+        document.getElementById("confirmWaLink").href = "https://wa.me/" + SHOP.phoneWa + "?text=" + waMsg;
         openOverlay("confirmOverlay");
       } else {
         alert("Something went wrong sending your order. Please try again, or message us directly on WhatsApp.");
@@ -1100,11 +1135,6 @@
       alert("Could not connect. Please check your internet connection and try again, or message us directly on WhatsApp.");
     });
   });
-
-  var buildOrderSummaryTextSnapshot = "";
-  orderForm.addEventListener("submit", function(){
-    buildOrderSummaryTextSnapshot = buildOrderSummaryText();
-  }, true);
 
   /* ================= REVIEWS (Firebase) ================= */
   function computeAggregates(){
