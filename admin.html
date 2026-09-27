@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Handmade By Gurnit</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFBF6; --card:#FFFFFF; --ink:#3B2A32; --ink-soft:#6E5A62;
+  --rose:#C1466B; --rose-dark:#9E3255; --sage:#7C9470;
+  --line:#EFE2DC; --line-soft:#F5EAE5; --radius:14px;
+  --shadow:0 8px 24px rgba(59,42,50,0.08);
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;padding:20px 14px 60px;}
+h1,h2{font-family:'Fraunces',serif;margin:0;color:var(--ink);}
+.wrap{max-width:640px;margin:0 auto;}
+.card{background:var(--card);border:1px solid var(--line-soft);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:5px;}
+.field input,.field textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14.5px;font-family:inherit;color:var(--ink);}
+.field textarea{resize:vertical;min-height:60px;}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:10px;font-weight:600;}
+.btn-primary{background:var(--rose);color:#fff;padding:12px;width:100%;font-size:14.5px;}
+.btn-primary:disabled{background:#DCC9CF;cursor:not-allowed;}
+.btn-danger{background:none;color:var(--rose-dark);text-decoration:underline;font-size:12.5px;padding:4px;}
+.btn-edit{background:var(--line-soft);color:var(--ink);font-size:12.5px;padding:6px 10px;}
+.msg{font-size:13px;margin-top:8px;}
+.msg.err{color:var(--rose-dark);}
+.msg.ok{color:var(--sage);}
+.product-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line-soft);align-items:center;}
+.product-row img{width:48px;height:48px;border-radius:8px;object-fit:cover;flex:0 0 auto;background:var(--line-soft);}
+.product-row .info{flex:1;min-width:0;}
+.product-row .name{font-weight:600;font-size:14px;}
+.product-row .meta{font-size:12px;color:var(--ink-soft);}
+.product-row .actions{display:flex;gap:6px;flex:0 0 auto;}
+.top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.signout{font-size:12.5px;color:var(--ink-soft);text-decoration:underline;background:none;padding:4px;}
+#authGate .card{max-width:340px;margin:60px auto 0;}
+.hidden{display:none !important;}
+.setup-note{font-size:12.5px;color:var(--ink-soft);line-height:1.6;}
+</style>
+</head>
+<body>
+
+<div id="authGate" class="wrap">
+  <div class="card">
+    <h2 style="font-size:19px;margin-bottom:14px;">Admin Login</h2>
+    <div class="field">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" autocomplete="username">
+    </div>
+    <div class="field">
+      <label for="loginPass">Password</label>
+      <input type="password" id="loginPass" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" id="loginBtn">Log In</button>
+    <div class="msg err" id="loginMsg"></div>
+  </div>
+</div>
+
+<div id="adminPanel" class="wrap hidden">
+  <div class="top-row">
+    <h1 style="font-size:22px;">Manage Products</h1>
+    <button class="signout" id="signOutBtn">Sign out</button>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:16px;margin-bottom:12px;" id="formTitle">Add a Product</h2>
+    <input type="hidden" id="editingId">
+    <div class="field"><label>Name</label><input type="text" id="pName"></div>
+    <div class="field"><label>Category</label><input type="text" id="pCategory" placeholder="e.g. Keyrings"></div>
+    <div class="field"><label>Price (₹)</label><input type="number" id="pPrice"></div>
+    <div class="field"><label>Image URL</label><input type="text" id="pImg" placeholder="https://..."></div>
+    <div class="field"><label>Description</label><textarea id="pDesc"></textarea></div>
+    <button class="btn-primary" id="saveBtn">Add Product</button>
+    <button class="btn-danger hidden" id="cancelEditBtn" style="margin-top:8px;">Cancel edit</button>
+    <div class="msg" id="saveMsg"></div>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:16px;margin-bottom:6px;">Current Products</h2>
+    <div id="productList"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ============ PASTE THE SAME firebaseConfig YOU USED IN index.html ============ */
+var firebaseConfig = {
+  apiKey: "AIzaSyDqE3mq9c0CyBZ2OdqnA2gHHFpo5J5UGOQ",
+  authDomain: "handmadedatabase.firebaseapp.com",
+  projectId: "handmadedatabase",
+  storageBucket: "handmadedatabase.firebasestorage.app",
+  messagingSenderId: "1067349548736",
+  appId: "1:1067349548736:web:c2ddd7dc81f5347e725725"
+};
+/* =============================================================================== */
+
+if(firebaseConfig.apiKey === "YOUR_API_KEY"){
+  document.getElementById("loginMsg").textContent =
+    "Firebase isn't configured yet — paste your firebaseConfig into admin.html first.";
+} 
+
+firebase.initializeApp(firebaseConfig);
+var auth = firebase.auth();
+var db = firebase.firestore();
+
+var authGate = document.getElementById("authGate");
+var adminPanel = document.getElementById("adminPanel");
+
+auth.onAuthStateChanged(function(user){
+  if(user){
+    authGate.classList.add("hidden");
+    adminPanel.classList.remove("hidden");
+    loadProducts();
+  } else {
+    authGate.classList.remove("hidden");
+    adminPanel.classList.add("hidden");
+  }
+});
+
+document.getElementById("loginBtn").addEventListener("click", function(){
+  var email = document.getElementById("loginEmail").value.trim();
+  var pass = document.getElementById("loginPass").value;
+  var msg = document.getElementById("loginMsg");
+  msg.textContent = "";
+  auth.signInWithEmailAndPassword(email, pass).catch(function(err){
+    msg.textContent = "Login failed: " + err.message;
+  });
+});
+
+document.getElementById("signOutBtn").addEventListener("click", function(){
+  auth.signOut();
+});
+
+function resetForm(){
+  document.getElementById("editingId").value = "";
+  document.getElementById("pName").value = "";
+  document.getElementById("pCategory").value = "";
+  document.getElementById("pPrice").value = "";
+  document.getElementById("pImg").value = "";
+  document.getElementById("pDesc").value = "";
+  document.getElementById("formTitle").textContent = "Add a Product";
+  document.getElementById("saveBtn").textContent = "Add Product";
+  document.getElementById("cancelEditBtn").classList.add("hidden");
+}
+
+document.getElementById("cancelEditBtn").addEventListener("click", resetForm);
+
+document.getElementById("saveBtn").addEventListener("click", function(){
+  var id = document.getElementById("editingId").value;
+  var data = {
+    name: document.getElementById("pName").value.trim(),
+    category: document.getElementById("pCategory").value.trim(),
+    price: Number(document.getElementById("pPrice").value) || 0,
+    img: document.getElementById("pImg").value.trim(),
+    desc: document.getElementById("pDesc").value.trim(),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  var msg = document.getElementById("saveMsg");
+  msg.className = "msg";
+  msg.textContent = "";
+
+  if(!data.name || !data.price || !data.img){
+    msg.className = "msg err";
+    msg.textContent = "Name, price and image URL are required.";
+    return;
+  }
+
+  var ref = id ? db.collection("products").doc(id) : db.collection("products").doc();
+  if(!id) data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+
+  ref.set(data, { merge: true }).then(function(){
+    msg.className = "msg ok";
+    msg.textContent = id ? "Product updated." : "Product added.";
+    resetForm();
+    loadProducts();
+  }).catch(function(err){
+    msg.className = "msg err";
+    msg.textContent = "Error: " + err.message;
+  });
+});
+
+function loadProducts(){
+  var list = document.getElementById("productList");
+  list.innerHTML = "Loading...";
+  db.collection("products").orderBy("createdAt", "desc").get().then(function(snap){
+    list.innerHTML = "";
+    if(snap.empty){
+      list.innerHTML = '<div style="font-size:13px;color:var(--ink-soft);">No products yet.</div>';
+      return;
+    }
+    snap.forEach(function(doc){
+      var p = doc.data();
+      var row = document.createElement("div");
+      row.className = "product-row";
+      row.innerHTML =
+        '<img src="'+(p.img||"")+'">' +
+        '<div class="info"><div class="name"></div><div class="meta"></div></div>' +
+        '<div class="actions">' +
+          '<button class="btn-edit">Edit</button>' +
+          '<button class="btn-danger">Delete</button>' +
+        '</div>';
+      row.querySelector(".name").textContent = p.name || "(unnamed)";
+      row.querySelector(".meta").textContent = (p.category||"—") + " · ₹" + (p.price||0);
+      row.querySelector(".btn-edit").addEventListener("click", function(){
+        document.getElementById("editingId").value = doc.id;
+        document.getElementById("pName").value = p.name || "";
+        document.getElementById("pCategory").value = p.category || "";
+        document.getElementById("pPrice").value = p.price || "";
+        document.getElementById("pImg").value = p.img || "";
+        document.getElementById("pDesc").value = p.desc || "";
+        document.getElementById("formTitle").textContent = "Edit Product";
+        document.getElementById("saveBtn").textContent = "Save Changes";
+        document.getElementById("cancelEditBtn").classList.remove("hidden");
+        window.scrollTo({top:0, behavior:"smooth"});
+      });
+      row.querySelector(".btn-danger").addEventListener("click", function(){
+        if(!confirm("Delete \"" + (p.name||"this product") + "\"? This can't be undone.")) return;
+        db.collection("products").doc(doc.id).delete().then(loadProducts);
+      });
+      list.appendChild(row);
+    });
+  }).catch(function(err){
+    list.innerHTML = '<div class="msg err">Error loading products: ' + err.message + '</div>';
+  });
+}
+})();
+</script>
+</body>
+</html>
