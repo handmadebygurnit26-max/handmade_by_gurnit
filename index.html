@@ -701,13 +701,13 @@
         replacing the placeholder values.
   ========================================================================= */
   var firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
+  apiKey: "AIzaSyDqE3mq9c0CyBZ2OdqnA2gHHFpo5J5UGOQ",
+  authDomain: "handmadedatabase.firebaseapp.com",
+  projectId: "handmadedatabase",
+  storageBucket: "handmadedatabase.firebasestorage.app",
+  messagingSenderId: "1067349548736",
+  appId: "1:1067349548736:web:c2ddd7dc81f5347e725725"
+};
   var reviewsEnabled = firebaseConfig.apiKey !== "YOUR_API_KEY";
   var db = null;
   if(reviewsEnabled){
@@ -783,6 +783,15 @@
       desc: "A beautifully customized embroidery hoop, combining handmade floral details, traditional attire and a heartfelt personal touch."
     }
   ];
+  if (reviewsEnabled) {
+  db.collection("products").orderBy("createdAt","desc").get().then(function(snap){
+    if (!snap.empty) {
+      PRODUCTS = snap.docs.map(function(d){ var p = d.data(); p.id = d.id; return p; });
+      renderFilterBar();
+      renderGrid();
+    }
+  });
+  }
 
   var CART_KEY = "hbg_cart_v1";
   var GIFTWRAP_KEY = "hbg_giftwrap_v1";
