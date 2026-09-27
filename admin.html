@@ -1187,104 +1187,43 @@ saveBtn.addEventListener(
        FIRESTORE SAVE
     ========================= */
 
-    ref
-      .set(
-        data,
-        { merge:true }
-      )
+    /* =========================
+   FIRESTORE SAVE
+========================= */
 
-      .then(
-        function(){
+ref.set(data, { merge: true })
+.then(function () {
 
-          console.log(
-            "SUCCESS: Product saved.",
-            ref.id
-          );
+    console.log("SUCCESS: Product saved.", ref.id);
 
+    saveMsg.className = "msg ok";
+    saveMsg.textContent = id
+        ? "Product updated successfully!"
+        : "Product added successfully!";
 
-          saveMsg.className =
-            "msg ok";
+    saveBtn.disabled = false;
+    saveBtn.textContent = id
+        ? "Update Product"
+        : "Add Product";
 
-          saveMsg.textContent =
-            id
-            ? "Product updated successfully!"
-            : "Product added successfully!";
+    resetForm();
+    loadProducts();
 
+})
+.catch(function (error) {
 
-          resetForm();
+    console.error("FIRESTORE SAVE ERROR:", error);
 
+    saveMsg.className = "msg err";
+    saveMsg.textContent =
+        "Could not save product: " + error.message;
 
-          loadProducts();
+    saveBtn.disabled = false;
+    saveBtn.textContent = id
+        ? "Update Product"
+        : "Add Product";
+});
 
-        }
-      )
-
-      .catch(
-        function(error){
-
-          console.error(
-            "FIRESTORE SAVE ERROR:",
-            error
-          );
-
-          console.error(
-            "Error code:",
-            error.code
-          );
-
-          console.error(
-            "Error message:",
-            error.message
-          );
-
-
-          saveMsg.className =
-            "msg err";
-
-
-          saveMsg.textContent =
-            "Firebase error: " +
-            error.code +
-            " — " +
-            error.message;
-
-
-          debugBox.classList
-            .remove("hidden");
-
-
-          debugBox.innerHTML =
-            "<strong>Debug information</strong><br>" +
-            "User: " +
-            (currentUser.email || "Unknown") +
-            "<br>" +
-            "Document: " +
-            ref.path +
-            "<br>" +
-            "Error code: " +
-            error.code +
-            "<br>" +
-            "Error: " +
-            error.message;
-
-        }
-      )
-
-      .finally(
-        function(){
-
-          saveBtn.disabled = false;
-
-          saveBtn.textContent =
-            id
-            ? "Save Changes"
-            : "Add Product";
-
-        }
-      );
-
-  }
-);
 
 
 /* =========================================================
