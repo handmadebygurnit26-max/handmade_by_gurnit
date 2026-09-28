@@ -773,17 +773,19 @@ loginBtn.addEventListener(
 
       .then(function(result){
 
-        console.log(
-          "LOGIN SUCCESS:",
-          result.user.email
-        );
+    console.log(
+        "LOGIN SUCCESS:",
+        result.user.email
+    );
 
-        loginMsg.className = "msg ok";
+    loginMsg.className = "msg ok";
 
-        loginMsg.textContent =
-          "Login successful.";
+    loginMsg.textContent =
+        "Login successful.";
 
-      })
+    window.location.href = "admin.html";
+
+})
 
       .catch(function(error){
 
