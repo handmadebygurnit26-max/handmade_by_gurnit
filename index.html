@@ -671,43 +671,15 @@
 (function(){
   "use strict";
 
-  /* ================= FIREBASE SETUP (for live reviews) =================
-     1. Go to https://console.firebase.google.com -> Add project (free plan)
-     2. Build > Firestore Database > Create database > Production mode >
-        pick a location near India (e.g. asia-south1) > Enable
-     3. Firestore > Rules tab, replace everything with:
-
-        rules_version = '2';
-        service cloud.firestore {
-          match /databases/{database}/documents {
-            match /reviews/{reviewId} {
-              allow read: if true;
-              allow create: if request.resource.data.rating is int
-                            && request.resource.data.rating >= 1
-                            && request.resource.data.rating <= 5
-                            && request.resource.data.name is string
-                            && request.resource.data.name.size() < 60
-                            && request.resource.data.comment is string
-                            && request.resource.data.comment.size() < 500;
-              allow update, delete: if false;
-            }
-          }
-        }
-
-        then click Publish.
-     4. Project settings (gear icon, top left) > General > scroll to
-        "Your apps" > click the </> web icon > register app (any nickname)
-        > copy the firebaseConfig object it shows you > paste it below,
-        replacing the placeholder values.
-  ========================================================================= */
+  /* ================= FIREBASE SETUP ================= */
   var firebaseConfig = {
-  apiKey: "AIzaSyDqE3mq9c0CyBZ2OdqnA2gHHFpo5J5UGOQ",
-  authDomain: "handmadedatabase.firebaseapp.com",
-  projectId: "handmadedatabase",
-  storageBucket: "handmadedatabase.firebasestorage.app",
-  messagingSenderId: "1067349548736",
-  appId: "1:1067349548736:web:c2ddd7dc81f5347e725725"
-};
+    apiKey: "AIzaSyDqE3mq9c0CyBZ2OdqnA2gHHFpo5J5UGOQ",
+    authDomain: "handmadedatabase.firebaseapp.com",
+    projectId: "handmadedatabase",
+    storageBucket: "handmadedatabase.firebasestorage.app",
+    messagingSenderId: "1067349548736",
+    appId: "1:1067349548736:web:c2ddd7dc81f5347e725725"
+  };
   var reviewsEnabled = firebaseConfig.apiKey !== "YOUR_API_KEY";
   var db = null;
   if(reviewsEnabled){
@@ -783,17 +755,21 @@
       desc: "A beautifully customized embroidery hoop, combining handmade floral details, traditional attire and a heartfelt personal touch."
     }
   ];
+
+  /* Load any extra products added via admin.html and ADD them to the
+     list above (never replace it), so your original products always stay. */
   if (reviewsEnabled) {
-db.collection("products").orderBy("createdAt","desc").get().then(function(snap){
-    alert("DEBUG: got " + snap.size + " products from Firestore");
-    if (!snap.empty) {
-      PRODUCTS = snap.docs.map(function(d){ var p = d.data(); p.id = d.id; return p; });
-      renderFilterBar();
-      renderGrid();
-    }
-  }).catch(function(err){
-    alert("DEBUG ERROR: " + err.message);
-  });
+    db.collection("products").orderBy("createdAt","desc").get().then(function(snap){
+      if (!snap.empty) {
+        var dbProducts = snap.docs.map(function(d){ var p = d.data(); p.id = d.id; return p; });
+        PRODUCTS = PRODUCTS.concat(dbProducts);
+        renderFilterBar();
+        renderGrid();
+      }
+    }).catch(function(err){
+      console.error("Product load error:", err);
+    });
+  }
 
   var CART_KEY = "hbg_cart_v1";
   var GIFTWRAP_KEY = "hbg_giftwrap_v1";
