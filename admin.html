@@ -3,1700 +3,304 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Admin — Handmade By Gurnit</title>
 <meta name="robots" content="noindex, nofollow">
-
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
 :root{
-  --bg:#FFFBF6;
-  --card:#FFFFFF;
-  --ink:#3B2A32;
-  --ink-soft:#6E5A62;
-  --rose:#C1466B;
-  --rose-dark:#9E3255;
-  --sage:#7C9470;
-  --line:#EFE2DC;
-  --line-soft:#F5EAE5;
-  --radius:14px;
+  --bg:#FFFBF6; --card:#FFFFFF; --ink:#3B2A32; --ink-soft:#6E5A62;
+  --rose:#C1466B; --rose-dark:#9E3255; --sage:#7C9470;
+  --line:#EFE2DC; --line-soft:#F5EAE5; --radius:14px;
   --shadow:0 8px 24px rgba(59,42,50,0.08);
 }
-
-*{
-  box-sizing:border-box;
-}
-
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--ink);
-  font-family:'Inter',system-ui,sans-serif;
-  padding:20px 14px 60px;
-}
-
-h1,h2{
-  font-family:'Fraunces',serif;
-  margin:0;
-  color:var(--ink);
-}
-
-.wrap{
-  max-width:640px;
-  margin:0 auto;
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--line-soft);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:20px;
-  margin-bottom:16px;
-}
-
-.field{
-  margin-bottom:12px;
-}
-
-.field label{
-  display:block;
-  font-size:12.5px;
-  font-weight:600;
-  color:var(--ink-soft);
-  margin-bottom:5px;
-}
-
-.field input,
-.field textarea{
-  width:100%;
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:10px 12px;
-  font-size:14.5px;
-  font-family:inherit;
-  color:var(--ink);
-  background:#fff;
-  outline:none;
-}
-
-.field input:focus,
-.field textarea:focus{
-  border-color:var(--rose);
-  box-shadow:0 0 0 3px rgba(193,70,107,0.08);
-}
-
-.field textarea{
-  resize:vertical;
-  min-height:80px;
-}
-
-button{
-  font-family:inherit;
-  cursor:pointer;
-  border:none;
-  border-radius:10px;
-  font-weight:600;
-}
-
-button:disabled{
-  opacity:.65;
-  cursor:not-allowed;
-}
-
-.btn-primary{
-  background:var(--rose);
-  color:#fff;
-  padding:12px;
-  width:100%;
-  font-size:14.5px;
-}
-
-.btn-primary:hover{
-  background:var(--rose-dark);
-}
-
-.btn-danger{
-  background:none;
-  color:var(--rose-dark);
-  text-decoration:underline;
-  font-size:12.5px;
-  padding:4px;
-}
-
-.btn-edit{
-  background:var(--line-soft);
-  color:var(--ink);
-  font-size:12.5px;
-  padding:6px 10px;
-}
-
-.msg{
-  font-size:13px;
-  margin-top:8px;
-  line-height:1.5;
-  word-break:break-word;
-}
-
-.msg.err{
-  color:var(--rose-dark);
-}
-
-.msg.ok{
-  color:var(--sage);
-}
-
-.msg.info{
-  color:var(--ink-soft);
-}
-
-.product-row{
-  display:flex;
-  gap:10px;
-  padding:10px 0;
-  border-bottom:1px solid var(--line-soft);
-  align-items:center;
-}
-
-.product-row:last-child{
-  border-bottom:none;
-}
-
-.product-row img{
-  width:48px;
-  height:48px;
-  border-radius:8px;
-  object-fit:cover;
-  flex:0 0 auto;
-  background:var(--line-soft);
-}
-
-.product-row .info{
-  flex:1;
-  min-width:0;
-}
-
-.product-row .name{
-  font-weight:600;
-  font-size:14px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.product-row .meta{
-  font-size:12px;
-  color:var(--ink-soft);
-  margin-top:3px;
-}
-
-.product-row .actions{
-  display:flex;
-  gap:6px;
-  flex:0 0 auto;
-}
-
-.top-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:16px;
-}
-
-.signout{
-  font-size:12.5px;
-  color:var(--ink-soft);
-  text-decoration:underline;
-  background:none;
-  padding:4px;
-}
-
-.hidden{
-  display:none !important;
-}
-
-.setup-note{
-  font-size:12.5px;
-  color:var(--ink-soft);
-  line-height:1.6;
-}
-
-.status-box{
-  margin-top:12px;
-  padding:10px 12px;
-  background:var(--line-soft);
-  border-radius:10px;
-  font-size:12px;
-  color:var(--ink-soft);
-  line-height:1.5;
-}
-
-.empty{
-  font-size:13px;
-  color:var(--ink-soft);
-  padding:10px 0;
-}
-
-.loading{
-  font-size:13px;
-  color:var(--ink-soft);
-  padding:10px 0;
-}
-
-.image-preview{
-  display:none;
-  margin-top:8px;
-  width:100px;
-  height:100px;
-  border-radius:10px;
-  object-fit:cover;
-  border:1px solid var(--line);
-}
-
-.image-preview.show{
-  display:block;
-}
-
-hr{
-  border:none;
-  border-top:1px solid var(--line-soft);
-  margin:18px 0;
-}
-
-#authGate .card{
-  max-width:340px;
-  margin:60px auto 0;
-}
-
-@media(max-width:500px){
-  body{
-    padding:15px 10px 50px;
-  }
-
-  .card{
-    padding:16px;
-  }
-
-  .product-row{
-    align-items:flex-start;
-  }
-
-  .product-row .actions{
-    flex-direction:column;
-  }
-}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;padding:20px 14px 60px;}
+h1,h2{font-family:'Fraunces',serif;margin:0;color:var(--ink);}
+.wrap{max-width:640px;margin:0 auto;}
+.card{background:var(--card);border:1px solid var(--line-soft);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-bottom:5px;}
+.field input,.field textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14.5px;font-family:inherit;color:var(--ink);}
+.field textarea{resize:vertical;min-height:60px;}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:10px;font-weight:600;}
+.btn-primary{background:var(--rose);color:#fff;padding:12px;width:100%;font-size:14.5px;}
+.btn-primary:disabled{background:#DCC9CF;cursor:not-allowed;}
+.btn-danger{background:none;color:var(--rose-dark);text-decoration:underline;font-size:12.5px;padding:4px;}
+.btn-edit{background:var(--line-soft);color:var(--ink);font-size:12.5px;padding:6px 10px;}
+.msg{font-size:13px;margin-top:8px;min-height:16px;}
+.msg.err{color:var(--rose-dark);font-weight:600;}
+.msg.ok{color:var(--sage);font-weight:600;}
+.product-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line-soft);align-items:center;}
+.product-row img{width:48px;height:48px;border-radius:8px;object-fit:cover;flex:0 0 auto;background:var(--line-soft);}
+.product-row .info{flex:1;min-width:0;}
+.product-row .name{font-weight:600;font-size:14px;}
+.product-row .meta{font-size:12px;color:var(--ink-soft);}
+.product-row .actions{display:flex;gap:6px;flex:0 0 auto;}
+.top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.signout{font-size:12.5px;color:var(--ink-soft);text-decoration:underline;background:none;padding:4px;}
+#authGate .card{max-width:340px;margin:60px auto 0;}
+.hidden{display:none !important;}
+#globalError{display:none;position:sticky;top:0;z-index:50;background:#FFE1E1;color:#7A1F1F;border:1px solid #E7A9A9;border-radius:10px;padding:10px 12px;font-size:12.5px;margin-bottom:14px;white-space:pre-wrap;word-break:break-word;}
+#statusBar{font-size:12px;color:var(--ink-soft);text-align:center;margin-bottom:10px;}
 </style>
 </head>
-
 <body>
 
-<!-- =========================
-     LOGIN SCREEN
-========================= -->
+<div class="wrap">
+<div id="globalError"></div>
+<div id="statusBar">Connecting…</div>
 
-<div id="authGate" class="wrap">
-
+<div id="authGate">
   <div class="card">
-
-    <h2 style="font-size:19px;margin-bottom:14px;">
-      Admin Login
-    </h2>
-
+    <h2 style="font-size:19px;margin-bottom:14px;">Admin Login</h2>
     <div class="field">
       <label for="loginEmail">Email</label>
-      <input
-        type="email"
-        id="loginEmail"
-        autocomplete="username"
-        placeholder="Admin email"
-      >
+      <input type="email" id="loginEmail" autocomplete="username">
     </div>
-
     <div class="field">
       <label for="loginPass">Password</label>
-      <input
-        type="password"
-        id="loginPass"
-        autocomplete="current-password"
-        placeholder="Password"
-      >
+      <input type="password" id="loginPass" autocomplete="current-password">
     </div>
-
-    <button class="btn-primary" id="loginBtn">
-      Log In
-    </button>
-
+    <button class="btn-primary" id="loginBtn">Log In</button>
     <div class="msg err" id="loginMsg"></div>
-
   </div>
-
 </div>
 
-
-<!-- =========================
-     ADMIN PANEL
-========================= -->
-
-<div id="adminPanel" class="wrap hidden">
-
+<div id="adminPanel" class="hidden">
   <div class="top-row">
-
-    <h1 style="font-size:22px;">
-      Manage Products
-    </h1>
-
-    <button class="signout" id="signOutBtn">
-      Sign out
-    </button>
-
+    <h1 style="font-size:22px;">Manage Products</h1>
+    <button class="signout" id="signOutBtn">Sign out</button>
   </div>
-
-
-  <!-- =========================
-       PRODUCT FORM
-  ========================= -->
 
   <div class="card">
-
-    <h2
-      style="font-size:16px;margin-bottom:12px;"
-      id="formTitle"
-    >
-      Add a Product
-    </h2>
-
-    <input
-      type="hidden"
-      id="editingId"
-    >
-
-
-    <div class="field">
-
-      <label for="pName">
-        Name
-      </label>
-
-      <input
-        type="text"
-        id="pName"
-        placeholder="Product name"
-      >
-
-    </div>
-
-
-    <div class="field">
-
-      <label for="pCategory">
-        Category
-      </label>
-
-      <input
-        type="text"
-        id="pCategory"
-        placeholder="e.g. Keyrings"
-      >
-
-    </div>
-
-
-    <div class="field">
-
-      <label for="pPrice">
-        Price (₹)
-      </label>
-
-      <input
-        type="number"
-        id="pPrice"
-        min="1"
-        step="1"
-        placeholder="e.g. 250"
-      >
-
-    </div>
-
-
-    <div class="field">
-
-      <label for="pImg">
-        Image URL
-      </label>
-
-      <input
-        type="url"
-        id="pImg"
-        placeholder="https://..."
-      >
-
-      <img
-        id="imagePreview"
-        class="image-preview"
-        alt="Image preview"
-      >
-
-    </div>
-
-
-    <div class="field">
-
-      <label for="pDesc">
-        Description
-      </label>
-
-      <textarea
-        id="pDesc"
-        placeholder="Describe your handmade product..."
-      ></textarea>
-
-    </div>
-
-
-    <button
-      class="btn-primary"
-      id="saveBtn"
-    >
-      Add Product
-    </button>
-
-
-    <button
-      class="btn-danger hidden"
-      id="cancelEditBtn"
-      style="margin-top:8px;"
-    >
-      Cancel edit
-    </button>
-
-
-    <div
-      class="msg"
-      id="saveMsg"
-    ></div>
-
-
-    <div
-      class="status-box hidden"
-      id="debugBox"
-    ></div>
-
+    <h2 style="font-size:16px;margin-bottom:12px;" id="formTitle">Add a Product</h2>
+    <input type="hidden" id="editingId">
+    <div class="field"><label>Name</label><input type="text" id="pName"></div>
+    <div class="field"><label>Category</label><input type="text" id="pCategory" placeholder="e.g. Keyrings"></div>
+    <div class="field"><label>Price (₹)</label><input type="number" id="pPrice"></div>
+    <div class="field"><label>Image URL</label><input type="text" id="pImg" placeholder="https://..."></div>
+    <div class="field"><label>Description</label><textarea id="pDesc"></textarea></div>
+    <button class="btn-primary" id="saveBtn">Add Product</button>
+    <button class="btn-danger hidden" id="cancelEditBtn" style="margin-top:8px;">Cancel edit</button>
+    <div class="msg" id="saveMsg"></div>
   </div>
-
-
-  <!-- =========================
-       PRODUCTS
-  ========================= -->
 
   <div class="card">
-
-    <h2
-      style="font-size:16px;margin-bottom:6px;"
-    >
-      Current Products
-    </h2>
-
-    <div id="productList">
-      <div class="loading">
-        Loading products...
-      </div>
-    </div>
-
+    <h2 style="font-size:16px;margin-bottom:6px;">Current Products</h2>
+    <div id="productList"></div>
   </div>
-
 </div>
-
-
-<!-- =========================
-     FIREBASE
-========================= -->
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-
 <script>
-
 (function(){
-
 "use strict";
 
+function showFatal(text){
+  var box = document.getElementById("globalError");
+  box.style.display = "block";
+  box.textContent = text;
+}
+window.addEventListener("error", function(e){
+  showFatal("Script error: " + e.message + " (line " + e.lineno + ")");
+});
+window.addEventListener("unhandledrejection", function(e){
+  showFatal("Async error: " + (e.reason && e.reason.message ? e.reason.message : e.reason));
+});
 
-/* =========================================================
-   FIREBASE CONFIG
-   ========================================================= */
+function setStatus(text){
+  var s = document.getElementById("statusBar");
+  if(s) s.textContent = text;
+}
 
+/* ============ Your Firebase project config ============ */
 var firebaseConfig = {
-
   apiKey: "AIzaSyDqE3mq9c0CyBZ2OdqnA2gHHFpo5J5UGOQ",
-
   authDomain: "handmadedatabase.firebaseapp.com",
-
   projectId: "handmadedatabase",
-
   storageBucket: "handmadedatabase.firebasestorage.app",
-
   messagingSenderId: "1067349548736",
-
   appId: "1:1067349548736:web:c2ddd7dc81f5347e725725"
-
 };
+/* ======================================================== */
 
-
-/* =========================================================
-   ELEMENTS
-   ========================================================= */
-
-var authGate =
-  document.getElementById("authGate");
-
-var adminPanel =
-  document.getElementById("adminPanel");
-
-var loginBtn =
-  document.getElementById("loginBtn");
-
-var loginMsg =
-  document.getElementById("loginMsg");
-
-var signOutBtn =
-  document.getElementById("signOutBtn");
-
-var saveBtn =
-  document.getElementById("saveBtn");
-
-var saveMsg =
-  document.getElementById("saveMsg");
-
-var productList =
-  document.getElementById("productList");
-
-var cancelEditBtn =
-  document.getElementById("cancelEditBtn");
-
-var debugBox =
-  document.getElementById("debugBox");
-
-var imagePreview =
-  document.getElementById("imagePreview");
-
-
-/* =========================================================
-   FIREBASE INITIALIZATION
-   ========================================================= */
-
-try {
-
-  firebase.initializeApp(firebaseConfig);
-
-} catch(error) {
-
-  console.error(
-    "Firebase initialization error:",
-    error
-  );
-
-  loginMsg.className = "msg err";
-
-  loginMsg.textContent =
-    "Firebase initialization failed: " +
-    error.message;
-
+if(typeof firebase === "undefined"){
+  showFatal("Firebase SDK failed to load. Check your internet connection and reload.");
+  setStatus("Failed to load Firebase.");
   return;
 }
 
+try{
+  firebase.initializeApp(firebaseConfig);
+} catch(e){
+  showFatal("Firebase init failed: " + e.message);
+  setStatus("Firebase init failed.");
+  return;
+}
 
 var auth = firebase.auth();
 var db = firebase.firestore();
 
-/*
- * Helps Firestore work on mobile networks/browsers
- * where the normal WebChannel connection can hang.
- */
-db.settings({
-  experimentalForceLongPolling: true,
-  useFetchStreams: false
+var authGate = document.getElementById("authGate");
+var adminPanel = document.getElementById("adminPanel");
+
+setStatus("Waiting for login…");
+
+auth.onAuthStateChanged(function(user){
+  if(user){
+    authGate.classList.add("hidden");
+    adminPanel.classList.remove("hidden");
+    setStatus("Signed in as " + user.email);
+    loadProducts();
+  } else {
+    authGate.classList.remove("hidden");
+    adminPanel.classList.add("hidden");
+    setStatus("Not signed in.");
+  }
+}, function(err){
+  showFatal("Auth listener error: " + err.message);
 });
 
+document.getElementById("loginBtn").addEventListener("click", function(){
+  var email = document.getElementById("loginEmail").value.trim();
+  var pass = document.getElementById("loginPass").value;
+  var msg = document.getElementById("loginMsg");
+  var btn = document.getElementById("loginBtn");
+  msg.textContent = "";
 
-/* =========================================================
-   GLOBAL ERROR HANDLING
-   ========================================================= */
-
-window.addEventListener(
-  "error",
-  function(event){
-
-    console.error(
-      "JavaScript error:",
-      event.error || event.message
-    );
-
-  }
-);
-
-
-window.addEventListener(
-  "unhandledrejection",
-  function(event){
-
-    console.error(
-      "Unhandled Promise error:",
-      event.reason
-    );
-
-  }
-);
-
-
-/* =========================================================
-   AUTH STATE
-   ========================================================= */
-
-auth.onAuthStateChanged(
-
-  function(user){
-
-    if(user){
-
-      console.log(
-        "Logged in:",
-        user.email
-      );
-
-      authGate.classList.add("hidden");
-
-      adminPanel.classList.remove("hidden");
-
-      loadProducts();
-
-    }else{
-
-      console.log(
-        "No user logged in."
-      );
-
-      authGate.classList.remove("hidden");
-
-      adminPanel.classList.add("hidden");
-
-    }
-
-  },
-
-  function(error){
-
-    console.error(
-      "Auth state error:",
-      error
-    );
-
-    loginMsg.className = "msg err";
-
-    loginMsg.textContent =
-      "Authentication error: " +
-      error.message;
-
+  if(!email || !pass){
+    msg.textContent = "Enter both email and password.";
+    return;
   }
 
-);
+  btn.disabled = true;
+  btn.textContent = "Logging in…";
 
+  auth.signInWithEmailAndPassword(email, pass)
+    .catch(function(err){
+      msg.textContent = "Login failed: " + err.message;
+    })
+    .finally(function(){
+      btn.disabled = false;
+      btn.textContent = "Log In";
+    });
+});
 
-/* =========================================================
-   LOGIN
-   ========================================================= */
-
-loginBtn.addEventListener(
-  "click",
-  function(){
-
-    var email =
-      document
-      .getElementById("loginEmail")
-      .value
-      .trim();
-
-    var pass =
-      document
-      .getElementById("loginPass")
-      .value;
-
-    loginMsg.className = "msg";
-
-    loginMsg.textContent = "";
-
-
-    if(!email){
-
-      loginMsg.className = "msg err";
-
-      loginMsg.textContent =
-        "Please enter your email.";
-
-      return;
-
-    }
-
-
-    if(!pass){
-
-      loginMsg.className = "msg err";
-
-      loginMsg.textContent =
-        "Please enter your password.";
-
-      return;
-
-    }
-
-
-    loginBtn.disabled = true;
-
-    loginBtn.textContent =
-      "Logging in...";
-
-
-    console.log(
-      "Trying Firebase login..."
-    );
-
-
-    auth
-      .signInWithEmailAndPassword(
-        email,
-        pass
-      )
-
-      .then(function(result){
-
-    console.log(
-        "LOGIN SUCCESS:",
-        result.user.email
-    );
-
-    loginMsg.className = "msg ok";
-
-    loginMsg.textContent =
-        "Login successful.";
-
-    window.location.href = "admin.html";
-
-})
-
-      .catch(function(error){
-
-        console.error(
-          "LOGIN ERROR:",
-          error
-        );
-
-        loginMsg.className = "msg err";
-
-        loginMsg.textContent =
-          "Login failed: " +
-          error.code +
-          " — " +
-          error.message;
-
-      })
-
-      .finally(function(){
-
-        loginBtn.disabled = false;
-
-        loginBtn.textContent =
-          "Log In";
-
-      });
-
-  }
-);
-
-
-/* =========================================================
-   SIGN OUT
-   ========================================================= */
-
-signOutBtn.addEventListener(
-  "click",
-  function(){
-
-    auth
-      .signOut()
-
-      .catch(function(error){
-
-        console.error(
-          "Sign out error:",
-          error
-        );
-
-      });
-
-  }
-);
-
-
-/* =========================================================
-   RESET FORM
-   ========================================================= */
+document.getElementById("signOutBtn").addEventListener("click", function(){
+  auth.signOut();
+});
 
 function resetForm(){
-
-  document
-    .getElementById("editingId")
-    .value = "";
-
-  document
-    .getElementById("pName")
-    .value = "";
-
-  document
-    .getElementById("pCategory")
-    .value = "";
-
-  document
-    .getElementById("pPrice")
-    .value = "";
-
-  document
-    .getElementById("pImg")
-    .value = "";
-
-  document
-    .getElementById("pDesc")
-    .value = "";
-
-
-  document
-    .getElementById("formTitle")
-    .textContent =
-    "Add a Product";
-
-
-  saveBtn.textContent =
-    "Add Product";
-
-
-  cancelEditBtn
-    .classList
-    .add("hidden");
-
-
-  imagePreview
-    .classList
-    .remove("show");
-
+  document.getElementById("editingId").value = "";
+  document.getElementById("pName").value = "";
+  document.getElementById("pCategory").value = "";
+  document.getElementById("pPrice").value = "";
+  document.getElementById("pImg").value = "";
+  document.getElementById("pDesc").value = "";
+  document.getElementById("formTitle").textContent = "Add a Product";
+  document.getElementById("saveBtn").textContent = "Add Product";
+  document.getElementById("cancelEditBtn").classList.add("hidden");
 }
 
+document.getElementById("cancelEditBtn").addEventListener("click", resetForm);
 
-/* =========================================================
-   CANCEL EDIT
-   ========================================================= */
+document.getElementById("saveBtn").addEventListener("click", function(){
+  var btn = document.getElementById("saveBtn");
+  var msg = document.getElementById("saveMsg");
+  msg.className = "msg";
+  msg.textContent = "";
 
-cancelEditBtn.addEventListener(
-  "click",
-  function(){
+  var id = document.getElementById("editingId").value;
+  var data = {
+    name: document.getElementById("pName").value.trim(),
+    category: document.getElementById("pCategory").value.trim(),
+    price: Number(document.getElementById("pPrice").value) || 0,
+    img: document.getElementById("pImg").value.trim(),
+    desc: document.getElementById("pDesc").value.trim(),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
 
-    resetForm();
-
-    saveMsg.className =
-      "msg";
-
-    saveMsg.textContent = "";
-
+  if(!data.name || !data.price || !data.img){
+    msg.className = "msg err";
+    msg.textContent = "Name, price and image URL are required.";
+    return;
   }
-);
 
-
-/* =========================================================
-   IMAGE PREVIEW
-   ========================================================= */
-
-document
-  .getElementById("pImg")
-  .addEventListener(
-    "input",
-    function(){
-
-      var url =
-        this.value.trim();
-
-
-      if(!url){
-
-        imagePreview
-          .classList
-          .remove("show");
-
-        return;
-
-      }
-
-
-      imagePreview.onload =
-        function(){
-
-          imagePreview
-            .classList
-            .add("show");
-
-        };
-
-
-      imagePreview.onerror =
-        function(){
-
-          imagePreview
-            .classList
-            .remove("show");
-
-        };
-
-
-      imagePreview.src = url;
-
-    }
-  );
-
-
-/* =========================================================
-   SAVE / ADD / UPDATE PRODUCT
-   ========================================================= */
-
-saveBtn.addEventListener(
-  "click",
-  function(){
-
-    var id =
-      document
-      .getElementById("editingId")
-      .value
-      .trim();
-
-
-    var name =
-      document
-      .getElementById("pName")
-      .value
-      .trim();
-
-
-    var category =
-      document
-      .getElementById("pCategory")
-      .value
-      .trim();
-
-
-    var priceValue =
-      document
-      .getElementById("pPrice")
-      .value
-      .trim();
-
-
-    var img =
-      document
-      .getElementById("pImg")
-      .value
-      .trim();
-
-
-    var desc =
-      document
-      .getElementById("pDesc")
-      .value
-      .trim();
-
-
-    saveMsg.className =
-      "msg";
-
-    saveMsg.textContent = "";
-
-
-    /* =========================
-       VALIDATION
-    ========================= */
-
-    if(!name){
-
-      saveMsg.className =
-        "msg err";
-
-      saveMsg.textContent =
-        "Please enter a product name.";
-
-      return;
-
-    }
-
-
-    if(!priceValue){
-
-      saveMsg.className =
-        "msg err";
-
-      saveMsg.textContent =
-        "Please enter a price.";
-
-      return;
-
-    }
-
-
-    var price =
-      Number(priceValue);
-
-
-    if(!Number.isFinite(price) || price <= 0){
-
-      saveMsg.className =
-        "msg err";
-
-      saveMsg.textContent =
-        "Please enter a valid price.";
-
-      return;
-
-    }
-
-
-    if(!img){
-
-      saveMsg.className =
-        "msg err";
-
-      saveMsg.textContent =
-        "Please enter an image URL.";
-
-      return;
-
-    }
-
-
-    /* =========================
-       CHECK LOGIN
-    ========================= */
-
-    var currentUser =
-      auth.currentUser;
-
-
-    if(!currentUser){
-
-      saveMsg.className =
-        "msg err";
-
-      saveMsg.textContent =
-        "You are not logged in. Please log in again.";
-
-      return;
-
-    }
-
-
-    /* =========================
-       PRODUCT DATA
-    ========================= */
-
-    var data = {
-
-      name: name,
-
-      category: category,
-
-      price: price,
-
-      img: img,
-
-      desc: desc,
-
-      updatedAt:
-        firebase.firestore
-        .FieldValue
-        .serverTimestamp()
-
-    };
-
-
-    console.log(
-      "Product data:",
-      data
-    );
-
-
-    /* =========================
-       DOCUMENT REFERENCE
-    ========================= */
-
-    var ref;
-
-
-    if(id){
-
-      ref =
-        db
-        .collection("products")
-        .doc(id);
-
-    }else{
-
-      ref =
-        db
-        .collection("products")
-        .doc();
-
-      data.createdAt =
-        firebase.firestore
-        .FieldValue
-        .serverTimestamp();
-
-    }
-
-
-    console.log(
-      "Firestore document:",
-      ref.path
-    );
-
-
-    /* =========================
-       DISABLE BUTTON
-    ========================= */
-
-    saveBtn.disabled = true;
-
-    saveBtn.textContent =
-      id
-      ? "Saving..."
-      : "Adding...";
-
-
-    saveMsg.className =
-      "msg info";
-
-    saveMsg.textContent =
-      "Saving product...";
-
-
-    /* =========================
-       FIRESTORE SAVE
-    ========================= */
-
-    /* =========================
-   FIRESTORE SAVE
-========================= */
-
-ref.set(data, { merge: true })
-.then(function () {
-
-    console.log("SUCCESS: Product saved.", ref.id);
-
-    saveMsg.className = "msg ok";
-    saveMsg.textContent = id
-        ? "Product updated successfully!"
-        : "Product added successfully!";
-
-    saveBtn.disabled = false;
-    saveBtn.textContent = id
-        ? "Update Product"
-        : "Add Product";
-
-    resetForm();
-    loadProducts();
-
-})
-.catch(function (error) {
-
-    console.error("FIRESTORE SAVE ERROR:", error);
-
-    saveMsg.className = "msg err";
-    saveMsg.textContent =
-        "Could not save product: " + error.message;
-
-    saveBtn.disabled = false;
-    saveBtn.textContent = id
-        ? "Update Product"
-        : "Add Product";
+  btn.disabled = true;
+  btn.textContent = "Saving…";
+
+  var ref = id ? db.collection("products").doc(id) : db.collection("products").doc();
+  if(!id) data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+
+  ref.set(data, { merge: true })
+    .then(function(){
+      msg.className = "msg ok";
+      msg.textContent = id ? "Product updated." : "Product added.";
+      resetForm();
+      loadProducts();
+    })
+    .catch(function(err){
+      msg.className = "msg err";
+      msg.textContent = "Error: " + err.message;
+    })
+    .finally(function(){
+      btn.disabled = false;
+      if(btn.textContent === "Saving…") btn.textContent = "Add Product";
+    });
 });
 
-
-
-/* =========================================================
-   LOAD PRODUCTS
-   ========================================================= */
-
 function loadProducts(){
-
-  productList.innerHTML =
-    '<div class="loading">Loading products...</div>';
-
-
-  console.log(
-    "Loading products..."
-  );
-
-
-  /*
-    We intentionally don't use orderBy here.
-    This makes the admin panel more tolerant of
-    older documents that don't have createdAt.
-  */
-
-  db
-    .collection("products")
-    .get()
-
-    .then(
-      function(snapshot){
-
-        console.log(
-          "Products found:",
-          snapshot.size
-        );
-
-
-        productList.innerHTML = "";
-
-
-        if(snapshot.empty){
-
-          productList.innerHTML =
-            '<div class="empty">' +
-            'No products yet.' +
-            '</div>';
-
-          return;
-
-        }
-
-
-        var products = [];
-
-
-        snapshot.forEach(
-          function(doc){
-
-            products.push({
-
-              id: doc.id,
-
-              data: doc.data()
-
-            });
-
-          }
-        );
-
-
-        /* Sort newest products first when possible */
-
-        products.sort(
-          function(a,b){
-
-            var aTime =
-              a.data.createdAt &&
-              a.data.createdAt.toMillis
-              ? a.data.createdAt.toMillis()
-              : 0;
-
-            var bTime =
-              b.data.createdAt &&
-              b.data.createdAt.toMillis
-              ? b.data.createdAt.toMillis()
-              : 0;
-
-            return bTime - aTime;
-
-          }
-        );
-
-
-        products.forEach(
-          function(item){
-
-            createProductRow(
-              item.id,
-              item.data
-            );
-
-          }
-        );
-
-      }
-    )
-
-    .catch(
-      function(error){
-
-        console.error(
-          "LOAD PRODUCTS ERROR:",
-          error
-        );
-
-
-        productList.innerHTML =
-          '<div class="msg err">' +
-          '<strong>Could not load products.</strong><br>' +
-          error.code +
-          ' — ' +
-          error.message +
-          '</div>';
-
-      }
-    );
-
-}
-
-
-/* =========================================================
-   CREATE PRODUCT ROW
-   ========================================================= */
-
-function createProductRow(
-  id,
-  p
-){
-
-  var row =
-    document.createElement("div");
-
-  row.className =
-    "product-row";
-
-
-  /* =========================
-     IMAGE
-  ========================= */
-
-  var image =
-    document.createElement("img");
-
-  image.alt =
-    p.name || "Product";
-
-
-  if(p.img){
-
-    image.src =
-      p.img;
-
-  }
-
-
-  image.onerror =
-    function(){
-
-      image.style.visibility =
-        "hidden";
-
-    };
-
-
-  /* =========================
-     INFO
-  ========================= */
-
-  var info =
-    document.createElement("div");
-
-  info.className =
-    "info";
-
-
-  var name =
-    document.createElement("div");
-
-  name.className =
-    "name";
-
-  name.textContent =
-    p.name || "(unnamed)";
-
-
-  var meta =
-    document.createElement("div");
-
-  meta.className =
-    "meta";
-
-  meta.textContent =
-    (p.category || "—") +
-    " · ₹" +
-    (p.price || 0);
-
-
-  info.appendChild(name);
-
-  info.appendChild(meta);
-
-
-  /* =========================
-     ACTIONS
-  ========================= */
-
-  var actions =
-    document.createElement("div");
-
-  actions.className =
-    "actions";
-
-
-  var editBtn =
-    document.createElement("button");
-
-  editBtn.className =
-    "btn-edit";
-
-  editBtn.textContent =
-    "Edit";
-
-
-  var deleteBtn =
-    document.createElement("button");
-
-  deleteBtn.className =
-    "btn-danger";
-
-  deleteBtn.textContent =
-    "Delete";
-
-
-  actions.appendChild(editBtn);
-
-  actions.appendChild(deleteBtn);
-
-
-  row.appendChild(image);
-
-  row.appendChild(info);
-
-  row.appendChild(actions);
-
-
-  /* =========================
-     EDIT
-  ========================= */
-
-  editBtn.addEventListener(
-    "click",
-    function(){
-
-      document
-        .getElementById("editingId")
-        .value = id;
-
-
-      document
-        .getElementById("pName")
-        .value =
-        p.name || "";
-
-
-      document
-        .getElementById("pCategory")
-        .value =
-        p.category || "";
-
-
-      document
-        .getElementById("pPrice")
-        .value =
-        p.price || "";
-
-
-      document
-        .getElementById("pImg")
-        .value =
-        p.img || "";
-
-
-      document
-        .getElementById("pDesc")
-        .value =
-        p.desc || "";
-
-
-      document
-        .getElementById("formTitle")
-        .textContent =
-        "Edit Product";
-
-
-      saveBtn.textContent =
-        "Save Changes";
-
-
-      cancelEditBtn
-        .classList
-        .remove("hidden");
-
-
-      saveMsg.className =
-        "msg";
-
-      saveMsg.textContent = "";
-
-
-      debugBox
-        .classList
-        .add("hidden");
-
-
-      if(p.img){
-
-        imagePreview.src =
-          p.img;
-
-        imagePreview.onload =
-          function(){
-
-            imagePreview
-              .classList
-              .add("show");
-
-          };
-
-      }
-
-
-      window.scrollTo({
-        top:0,
-        behavior:"smooth"
-      });
-
-    }
-  );
-
-
-  /* =========================
-     DELETE
-  ========================= */
-
-  deleteBtn.addEventListener(
-    "click",
-    function(){
-
-      var productName =
-        p.name ||
-        "this product";
-
-
-      if(
-        !confirm(
-          'Delete "' +
-          productName +
-          '"? This cannot be undone.'
-        )
-      ){
-
+  var list = document.getElementById("productList");
+  list.innerHTML = "Loading...";
+  db.collection("products").orderBy("createdAt", "desc").get()
+    .then(function(snap){
+      list.innerHTML = "";
+      if(snap.empty){
+        list.innerHTML = '<div style="font-size:13px;color:var(--ink-soft);">No products yet.</div>';
         return;
-
       }
-
-
-      deleteBtn.disabled =
-        true;
-
-      deleteBtn.textContent =
-        "Deleting...";
-
-
-      db
-        .collection("products")
-        .doc(id)
-        .delete()
-
-        .then(
-          function(){
-
-            console.log(
-              "Product deleted:",
-              id
-            );
-
-            loadProducts();
-
-          }
-        )
-
-        .catch(
-          function(error){
-
-            console.error(
-              "DELETE ERROR:",
-              error
-            );
-
-
-            alert(
-              "Could not delete product:\n\n" +
-              error.code +
-              " — " +
-              error.message
-            );
-
-
-            deleteBtn.disabled =
-              false;
-
-            deleteBtn.textContent =
-              "Delete";
-
-          }
-        );
-
-    }
-  );
-
-
-  productList.appendChild(row);
-
+      snap.forEach(function(doc){
+        var p = doc.data();
+        var row = document.createElement("div");
+        row.className = "product-row";
+        row.innerHTML =
+          '<img src="'+(p.img||"")+'">' +
+          '<div class="info"><div class="name"></div><div class="meta"></div></div>' +
+          '<div class="actions">' +
+            '<button class="btn-edit">Edit</button>' +
+            '<button class="btn-danger">Delete</button>' +
+          '</div>';
+        row.querySelector(".name").textContent = p.name || "(unnamed)";
+        row.querySelector(".meta").textContent = (p.category||"—") + " · ₹" + (p.price||0);
+        row.querySelector(".btn-edit").addEventListener("click", function(){
+          document.getElementById("editingId").value = doc.id;
+          document.getElementById("pName").value = p.name || "";
+          document.getElementById("pCategory").value = p.category || "";
+          document.getElementById("pPrice").value = p.price || "";
+          document.getElementById("pImg").value = p.img || "";
+          document.getElementById("pDesc").value = p.desc || "";
+          document.getElementById("formTitle").textContent = "Edit Product";
+          document.getElementById("saveBtn").textContent = "Save Changes";
+          document.getElementById("cancelEditBtn").classList.remove("hidden");
+          window.scrollTo({top:0, behavior:"smooth"});
+        });
+        row.querySelector(".btn-danger").addEventListener("click", function(){
+          if(!confirm("Delete \"" + (p.name||"this product") + "\"? This can't be undone.")) return;
+          db.collection("products").doc(doc.id).delete().then(loadProducts).catch(function(err){
+            showFatal("Delete failed: " + err.message);
+          });
+        });
+        list.appendChild(row);
+      });
+    })
+    .catch(function(err){
+      list.innerHTML = '<div class="msg err">Error loading products: ' + err.message + '</div>';
+    });
 }
-
-
-/* =========================================================
-   ENTER KEY LOGIN
-   ========================================================= */
-
-document
-  .getElementById("loginPass")
-  .addEventListener(
-    "keydown",
-    function(event){
-
-      if(event.key === "Enter"){
-
-        loginBtn.click();
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   STARTUP MESSAGE
-   ========================================================= */
-
-console.log(
-  "Handmade By Gurnit Admin loaded."
-);
-
-console.log(
-  "Firebase project:",
-  firebaseConfig.projectId
-);
-
 })();
-
 </script>
-
 </body>
 </html>
