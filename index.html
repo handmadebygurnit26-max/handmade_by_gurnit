@@ -784,14 +784,16 @@
     }
   ];
   if (reviewsEnabled) {
-  db.collection("products").orderBy("createdAt","desc").get().then(function(snap){
+db.collection("products").orderBy("createdAt","desc").get().then(function(snap){
+    alert("DEBUG: got " + snap.size + " products from Firestore");
     if (!snap.empty) {
       PRODUCTS = snap.docs.map(function(d){ var p = d.data(); p.id = d.id; return p; });
       renderFilterBar();
       renderGrid();
     }
+  }).catch(function(err){
+    alert("DEBUG ERROR: " + err.message);
   });
-  }
 
   var CART_KEY = "hbg_cart_v1";
   var GIFTWRAP_KEY = "hbg_giftwrap_v1";
