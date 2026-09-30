@@ -182,6 +182,49 @@
     margin-bottom:12px;
   }
   .lb-img-wrap img{width:100%;height:100%;object-fit:cover;}
+
+  .lb-gallery{
+    width:100%;
+    aspect-ratio:1/1;
+    border-radius:14px;
+    overflow:hidden;
+    background:var(--cream-tag);
+    position:relative;
+  }
+  .lb-gallery-track{
+    display:flex;
+    width:100%;
+    height:100%;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .lb-gallery-track::-webkit-scrollbar{display:none;}
+  .lb-gallery-track img{
+    flex:0 0 100%;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    scroll-snap-align:start;
+  }
+  .lb-gallery-dots{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    margin:8px 0 12px;
+  }
+  .lb-gallery-dots .dot{
+    width:6px;height:6px;
+    border-radius:999px;
+    background:var(--line);
+    transition:background .15s ease, width .15s ease;
+    flex:0 0 auto;
+  }
+  .lb-gallery-dots .dot.active{
+    background:var(--rose);
+    width:16px;
+  }
   .lb-price{font-size:17px;font-weight:700;color:var(--rose-dark);margin:2px 0 4px;}
   .lb-desc{font-size:13.5px;color:var(--ink-soft);margin-bottom:6px;}
   .lb-add-btn{margin-top:6px;}
@@ -703,8 +746,7 @@
       name: "Bouquet Keyring",
       category: "Keyrings",
       price: 150,
-      img: ["bouquet keyring.jpg",
-            ], 
+      images: ["https://i.ibb.co/ZRQtjZRN/IMG-20260904-204209-549.jpg"],
       desc: "A little bouquet of handmade roses, crafted with love and turned into a tiny keepsake."
     },
     {
@@ -712,7 +754,7 @@
       name: "One Rose Bouquet",
       category: "Ribbon Bouquets",
       price: 300,
-      img: "bouquet.jpg",
+      images: ["https://i.ibb.co/pjNHXy7q/Snapchat-524968951.jpg"],
       desc: "A handmade rose blooming with love, wrapped in a little dream of pink."
     },
     {
@@ -720,7 +762,7 @@
       name: "Custom Hanky",
       category: "Custom Hankies",
       price: 100,
-      img: "Gill hankey.jpg",
+      images: ["https://i.ibb.co/PG91DZPY/Snapchat-889535716.jpg"],
       desc: "A custom embroidered hanky, stitched with love and made uniquely for her."
     },
     {
@@ -728,7 +770,7 @@
       name: "Custom Photoframe",
       category: "Custom Gifts",
       price:2000,
-      img: "photoframe.jpg",
+      images: ["https://i.ibb.co/vCXdvGJR/IMG-20260214-195437.jpg"],
       desc: "A personalized memory frame, beautifully crafted with photos, lights and heartfelt details."
     },
     {
@@ -736,7 +778,7 @@
       name: "Custom Poster",
       category: "Custom Posters",
       price: 200,
-      img: "https://i.ibb.co/7tCGwXJQ/IMG-20250422-193530.jpg",
+      images: ["https://i.ibb.co/7tCGwXJQ/IMG-20250422-193530.jpg"],
       desc: "A vibrant handmade birthday poster, customized with colorful balloons, playful ribbons and a personal touch."
     },
     {
@@ -744,7 +786,7 @@
       name: "Letter Keyring",
       category: "Keyrings",
       price: 250,
-      img: "initial keyring.jpg",
+      images: ["https://i.ibb.co/KzVXY0GF/1686900962103.jpg"],
       desc: "A colorful custom letter keyring, handmade with delicate flowers and leafy details."
     },
     {
@@ -752,17 +794,34 @@
       name: "Custom Hoop",
       category: "Fabric Paintings",
       price: 1200,
-      img: "hoop.jpg",
+      images: ["https://i.ibb.co/qMyXVfmK/Screenshot-20260926-154217.jpg"],
       desc: "A beautifully customized embroidery hoop, combining handmade floral details, traditional attire and a heartfelt personal touch."
     }
   ];
+
+  /* Works whether a product has "images":[...] (new format) or the old
+     single "img":"..." field (e.g. items added before this update) */
+  function getImages(p){
+    if(p.images && p.images.length) return p.images;
+    if(p.img) return [p.img];
+    return [];
+  }
+  function primaryImage(p){
+    var imgs = getImages(p);
+    return imgs.length ? imgs[0] : "";
+  }
 
   /* Load any extra products added via admin.html and ADD them to the
      list above (never replace it), so your original products always stay. */
   if (reviewsEnabled) {
     db.collection("products").orderBy("createdAt","desc").get().then(function(snap){
       if (!snap.empty) {
-        var dbProducts = snap.docs.map(function(d){ var p = d.data(); p.id = d.id; return p; });
+        var dbProducts = snap.docs.map(function(d){
+          var p = d.data();
+          p.id = d.id;
+          if(!p.images){ p.images = p.img ? [p.img] : []; }
+          return p;
+        });
         PRODUCTS = PRODUCTS.concat(dbProducts);
         renderFilterBar();
         renderGrid();
@@ -858,7 +917,7 @@
       var card = document.createElement("div");
       card.className = "card";
       card.innerHTML =
-        '<button class="card-img-btn" data-id="'+p.id+'" aria-label="View '+escapeHtml(p.name)+'"><img src="'+p.img+'" alt="'+escapeHtml(p.name)+'" loading="lazy"></button>' +
+        '<button class="card-img-btn" data-id="'+p.id+'" aria-label="View '+escapeHtml(p.name)+'"><img src="'+primaryImage(p)+'" alt="'+escapeHtml(p.name)+'" loading="lazy"></button>' +
         '<div class="card-body">' +
           '<div class="card-cat">'+escapeHtml(p.category)+'</div>' +
           '<div class="card-name">'+escapeHtml(p.name)+'</div>' +
@@ -929,7 +988,7 @@
         var row = document.createElement("div");
         row.className = "cart-item";
         row.innerHTML =
-          '<img src="'+p.img+'" alt="'+escapeHtml(p.name)+'" loading="lazy">' +
+          '<img src="'+primaryImage(p)+'" alt="'+escapeHtml(p.name)+'" loading="lazy">' +
           '<div class="cart-item-info">' +
             '<div class="cart-item-name">'+escapeHtml(p.name)+'</div>' +
             '<div class="cart-item-price">'+formatRupee(p.price)+' each</div>' +
@@ -1205,25 +1264,23 @@
       });
     }
 
-    var galleryImages = p.images || [p.img];
+    var images = getImages(p);
+    var galleryImgsHtml = images.map(function(src){
+      return '<img src="'+src+'" alt="'+escapeHtml(p.name)+'" loading="lazy">';
+    }).join("");
+    var dotsHtml = images.length > 1
+      ? '<div class="lb-gallery-dots" id="lbDots">' +
+          images.map(function(_, i){ return '<span class="dot'+(i===0?" active":"")+'"></span>'; }).join("") +
+        '</div>'
+      : "";
 
-var galleryHtml =
-      '<div class="lb-gallery" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;touch-action:pan-x;width:100%;height:320px;">';
-
-galleryImages.forEach(function(src){
-  galleryHtml +=
-      '<div style="flex:0 0 100%;width:100%;height:100%;scroll-snap-align:start;display:flex;align-items:center;justify-content:center;">' +
-        '<img src="'+src+'" alt="'+escapeHtml(p.name)+'" loading="lazy" style="max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;">' +
-      '</div>';
-});
-
-galleryHtml += '</div>';
-
-var baseHtml =
-      galleryHtml +
+    var baseHtml =
+      '<div class="lb-gallery"><div class="lb-gallery-track" id="lbGalleryTrack">'+galleryImgsHtml+'</div></div>' +
+      dotsHtml +
       '<div class="lb-price">'+formatRupee(p.price)+'</div>' +
       '<div class="lb-desc">'+escapeHtml(p.desc)+'</div>' +
       '<button class="add-btn lb-add-btn" data-id="'+p.id+'">Add to Cart</button>';
+
     if(!reviewsEnabled){
       body.innerHTML = baseHtml +
         '<div class="reviews-block">' +
@@ -1252,6 +1309,17 @@ var baseHtml =
           '<button class="primary-btn" id="submitReviewBtn" type="button">Submit Review</button>' +
           '<div class="rev-msg" id="reviewMsg"></div>' +
         '</div>';
+    }
+
+    if(images.length > 1){
+      var track = document.getElementById("lbGalleryTrack");
+      var dots = document.getElementById("lbDots");
+      track.addEventListener("scroll", function(){
+        var idx = Math.round(track.scrollLeft / track.clientWidth);
+        dots.querySelectorAll(".dot").forEach(function(d, i){
+          d.classList.toggle("active", i === idx);
+        });
+      });
     }
 
     var lbAdd = body.querySelector(".lb-add-btn");
